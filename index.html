@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Un espacio para ti</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		html, body {
+			width: 100%;
+			height: 100%;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background: #0a0e27;
+			color: #f0f0f0;
+			overflow-x: hidden;
+		}
+
+		/* Canvas de estrellas */
+		#stars-canvas {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 1;
+		}
+
+		/* Contenedor principal */
+		.container {
+			position: relative;
+			z-index: 2;
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+		}
+
+		/* Header */
+		header {
+			text-align: center;
+			margin-bottom: 40px;
+		}
+
+		header h1 {
+			font-size: 2.5rem;
+			font-weight: 300;
+			letter-spacing: 2px;
+			margin-bottom: 8px;
+			color: #e8c4d0;
+		}
+
+		header p {
+			font-size: 1rem;
+			color: #b0a0a8;
+			font-weight: 300;
+		}
+
+		/* Contenedor de poemas */
+		.poems-container {
+			max-width: 600px;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			gap: 24px;
+		}
+
+		/* Cada poema */
+		.poem-card {
+			background: rgba(255, 255, 255, 0.03);
+			backdrop-filter: blur(10px);
+			padding: 28px;
+			border-radius: 12px;
+			border: 1px solid rgba(232, 196, 208, 0.1);
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+			transition: all 0.4s ease;
+			cursor: pointer;
+			min-height: 140px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		.poem-card:hover {
+			background: rgba(255, 255, 255, 0.05);
+			border-color: rgba(232, 196, 208, 0.2);
+			transform: translateY(-4px);
+			box-shadow: 0 12px 40px rgba(232, 196, 208, 0.15);
+		}
+
+		.poem-card h2 {
+			font-size: 1.3rem;
+			font-weight: 400;
+			margin-bottom: 12px;
+			color: #e8c4d0;
+		}
+
+		.poem-card p {
+			font-size: 1rem;
+			line-height: 1.7;
+			color: #d0c0c8;
+			font-weight: 300;
+		}
+
+		/* Sección de intereses */
+		.interests-section {
+			margin-top: 60px;
+			text-align: center;
+			max-width: 600px;
+		}
+
+		.interests-section h3 {
+			font-size: 1.2rem;
+			color: #e8c4d0;
+			margin-bottom: 20px;
+			font-weight: 400;
+		}
+
+		.interests-list {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			justify-content: center;
+		}
+
+		.interest-tag {
+			background: rgba(232, 196, 208, 0.12);
+			padding: 8px 16px;
+			border-radius: 20px;
+			font-size: 0.95rem;
+			color: #e8c4d0;
+			border: 1px solid rgba(232, 196, 208, 0.2);
+		}
+
+		/* Footer */
+		footer {
+			margin-top: 80px;
+			text-align: center;
+			color: #8a7a88;
+			font-size: 0.9rem;
+			font-weight: 300;
+		}
+
+		footer p {
+			margin: 8px 0;
+		}
+
+		/* Sección de planes */
+		.plans-section {
+			margin-top: 60px;
+			text-align: center;
+			max-width: 600px;
+		}
+
+		.plans-section h3 {
+			font-size: 1.2rem;
+			color: #e8c4d0;
+			margin-bottom: 20px;
+			font-weight: 400;
+		}
+
+		.plans-list {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+
+		.plan-item {
+			background: rgba(232, 196, 208, 0.08);
+			border: 1px solid rgba(232, 196, 208, 0.15);
+			padding: 14px 18px;
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			transition: all 0.3s ease;
+			cursor: pointer;
+		}
+
+		.plan-item:hover {
+			background: rgba(232, 196, 208, 0.12);
+			border-color: rgba(232, 196, 208, 0.25);
+			transform: translateX(4px);
+		}
+
+		.plan-icon {
+			font-size: 1.3rem;
+			min-width: 30px;
+			text-align: center;
+		}
+
+		.plan-text {
+			color: #d0c0c8;
+			font-size: 0.95rem;
+			font-weight: 300;
+		}
+
+		/* Responsive */
+		@media (max-width: 768px) {
+			header h1 {
+				font-size: 2rem;
+			}
+
+			header p {
+				font-size: 0.95rem;
+			}
+
+			.poem-card {
+				padding: 20px;
+				min-height: 120px;
+			}
+
+			.poem-card h2 {
+				font-size: 1.15rem;
+			}
+
+			.poem-card p {
+				font-size: 0.95rem;
+			}
+
+			.interests-section h3 {
+				font-size: 1.1rem;
+			}
+
+			.interest-tag {
+				font-size: 0.9rem;
+			}
+
+		.plans-section h3 {
+			font-size: 1.1rem;
+		}
+
+		.plan-item {
+			padding: 12px 16px;
+			font-size: 0.9rem;
+		}
+			header h1 {
+				font-size: 1.6rem;
+				letter-spacing: 1px;
+			}
+
+			header p {
+				font-size: 0.9rem;
+			}
+
+			.poem-card {
+				padding: 16px;
+				gap: 12px;
+			}
+
+			.poem-card h2 {
+				font-size: 1.05rem;
+			}
+
+			.poem-card p {
+				font-size: 0.9rem;
+				line-height: 1.6;
+			}
+
+			.interests-section {
+				margin-top: 50px;
+			}
+
+			.plans-section {
+				margin-top: 50px;
+			}
+
+			.plan-item {
+				padding: 11px 14px;
+				font-size: 0.85rem;
+			}
+
+			footer {
+				margin-top: 50px;
+				font-size: 0.85rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<canvas id="stars-canvas"></canvas>
+
+	<div class="container">
+		<header>
+			<h1>Un espacio para ti Ali</h1>
+			<p>Cuando el día pese, aquí hay un lugar bonito</p>
+		</header>
+
+		<div class="poems-container">
+			<div class="poem-card">
+				<h2>Sobre tus ojos</h2>
+				<p>Son como ventanas que no necesitan palabras. En ellos hay algo que brilla sin intención, una profundidad que invita a quien mira a quedarse un poco más. No te das cuenta, pero ahí está — esa luz suave que hace que todo alrededor se detenga por un instante.</p>
+			</div>
+
+			<div class="poem-card">
+				<h2>Sobre tu risa</h2>
+				<p>Es el sonido más genuino que he escuchado en mucho tiempo. Esa risa que no espera permiso, que surge sin filtro. Hay algo mágico en cómo contagia — como si dijera sin palabras: "aquí, en este momento, está bien estar vivo". Me gustaría que siempre tuvieras razones para reír así.</p>
+			</div>
+
+			<div class="poem-card">
+				<h2>Sobre las cosas que te gustan</h2>
+				<p>Liga de Quito, Barcelona, Paulo Londra entre otras— cada cosa que mencionaste brillaba diferente en tu carita. No es solo que te gusten; es que realmente las sientes. Eso es lo hermoso. Alguien que se atreve a ser ella misma, a sentir, sin disculparse. Eso te hace especial y diferente jaja me gusta.</p>
+			</div>
+
+			<div class="poem-card">
+				<h2>Para cuando el día te pese</h2>
+				<p>Si todo se siente pesado hoy, está bien cerrar los ojos un momento. Todas las noches terminan, y hay madrugadas donde todo descansa. Tú también mereces ese descanso — esos momentos donde nada pide nada, donde solo existir es suficiente. Recuerda que después viene el aire fresco.</p>
+			</div>
+
+			<div class="poem-card">
+				<h2>Un mensaje que puedes leer si te estresas</h2>
+				<p>No sé todos los pensamientos que guardas, ni todas las noches donde te acuestas sin dormir por algo que quizas preocupe. Pero sé que eres alguien que merece ser escuchada de verdad. Eres alguien que importa. Y si en algún momento necesitas un lugar donde estar sin pretender, sin explicar — aquí está. Libre de juicios, lleno de paz estoy para ti.</p>
+			</div>
+
+			<div class="poem-card">
+				<h2>Sobre lo hermoso</h2>
+				<p>La música suena diferente cuando la escuchamos con alguien que realmente siente y me gustaria algún día escuchar música contigo. El fútbol es más emocionante cuando alguien al lado vive cada jugada jaja y me gustaría ver partidos contigo jaja. Los colores son más vívidos cuando hay otra persona presente que ve lo mismo que tú. La belleza siempre necesita testigos. Y me encantaría que nuestros testigos de belleza se cruzen más seguido.</p>
+			</div>
+
+			<div class="poem-card">
+				<h2>El regalo de hoy</h2>
+				<p>No sé qué días vienen. Pero sé que el de hoy fue raro y hermoso — fue el día donde conocí a alguien genuino. A alguien que ríe sin permiso, que siente sin disculpas, que existe de verdad. Eso es un regalo. Y los regalos siempre merecen ser recordados con una sonrisa y se que a penas te conozco jaja pero eso fue suficiente para saber que quiero seguir haciendolo c:.</p>
+			</div>
+		</div>
+
+		<div class="interests-section">
+			<h3>Las cosas que te gustan</h3>
+			<div class="interests-list">
+				<span class="interest-tag">⚽ Liga de Quito</span>
+				<span class="interest-tag">🏆 FC Barcelona</span>
+				<span class="interest-tag">🎵 Paulo Londra</span>
+				<span class="interest-tag">🧪 Química</span>
+				<span class="interest-tag">🍷 Conche de vino</span>
+			</div>
+		</div>
+
+		<div class="plans-section">
+			<h3>Planes que queremos cumplir</h3>
+			<div class="plans-list">
+				<div class="plan-item">
+					<span class="plan-icon">🛹</span>
+					<span class="plan-text">Salir a patinar</span>
+				</div>
+				<div class="plan-item">
+					<span class="plan-icon">🏙️</span>
+					<span class="plan-text">Salir al centro</span>
+				</div>
+				<div class="plan-item">
+					<span class="plan-icon">🌄</span>
+					<span class="plan-text">Conocer lugares bonitos</span>
+				</div>
+				<div class="plan-item">
+					<span class="plan-icon">🎳</span>
+					<span class="plan-text">Salir a jugar bolos</span>
+				</div>
+				<div class="plan-item">
+					<span class="plan-icon">🎵</span>
+					<span class="plan-text">Salir a un concierto</span>
+				</div>
+				<div class="plan-item">
+					<span class="plan-icon">🎬</span>
+					<span class="plan-text">Ir a ver Boulevard en el cine</span>
+				</div>
+			</div>
+		</div>
+
+		<footer>
+			<p>Hecho con sinceridad de parte de David</p>
+			<p>Para cuando necesites descansar un poco.</p>
+		</footer>
+	</div>
+
+	<script>
+		// Canvas de estrellas
+		const canvas = document.getElementById('stars-canvas');
+		const ctx = canvas.getContext('2d');
+
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		// Crear estrellas
+		const stars = [];
+		const starCount = Math.floor((canvas.width * canvas.height) / 15000);
+
+		for (let i = 0; i < starCount; i++) {
+			stars.push({
+				x: Math.random() * canvas.width,
+				y: Math.random() * canvas.height,
+				radius: Math.random() * 1.5,
+				opacity: Math.random() * 0.5 + 0.3,
+				twinkleDuration: Math.random() * 3000 + 2000,
+				twinkeStartTime: Math.random() * 5000
+			});
+		}
+
+		// Dibujar estrellas
+		function drawStars() {
+			ctx.fillStyle = '#0a0e27';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+			const currentTime = Date.now();
+
+			for (let star of stars) {
+				const elapsed = (currentTime - star.twinkeStartTime) % star.twinkleDuration;
+				const progress = elapsed / star.twinkleDuration;
+
+				// Efecto de parpadeo suave
+				let opacity = star.opacity;
+				if (progress < 0.5) {
+					opacity = star.opacity + (0.4 * (progress * 2));
+				} else {
+					opacity = star.opacity + (0.4 * ((1 - progress) * 2));
+				}
+
+				ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+				ctx.beginPath();
+				ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+				ctx.fill();
+			}
+
+			requestAnimationFrame(drawStars);
+		}
+
+		// Ajustar canvas al redimensionar
+		window.addEventListener('resize', () => {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		});
+
+		drawStars();
+
+		// Efecto hover suave (opcional)
+		const poemCards = document.querySelectorAll('.poem-card');
+		poemCards.forEach(card => {
+			card.addEventListener('mouseenter', () => {
+				card.style.transition = 'all 0.4s ease';
+			});
+		});
+	</script>
+</body>
+</html>
